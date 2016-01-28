@@ -37,7 +37,7 @@ public class SincronizaAdaptador extends AbstractThreadedSyncAdapter{
 
     @Override
     public void onPerformSync(Account account, Bundle extras, String authority, ContentProviderClient provider, SyncResult syncResult) {
-        String locationQuery = Util.getPreferredLocation(getContext());
+        String locationQuery ;//= Util.getPreferredLocation(getContext());
 
         HttpURLConnection urlConnection = null;
         BufferedReader reader = null;
@@ -56,7 +56,7 @@ public class SincronizaAdaptador extends AbstractThreadedSyncAdapter{
             final String APPID_PARAM = "APPID";
 
             Uri builtUri = Uri.parse(FORECAST_BASE_URL).buildUpon()
-                    .appendQueryParameter(QUERY_PARAM, locationQuery)
+                  //  .appendQueryParameter(QUERY_PARAM, locationQuery)
                     .appendQueryParameter(FORMAT_PARAM, format)
                     .appendQueryParameter(ARTIST_PARAM, artist)
                     .appendQueryParameter(CITY_PARAM, city)
@@ -90,14 +90,14 @@ public class SincronizaAdaptador extends AbstractThreadedSyncAdapter{
                 return;
             }
             JsonString = buffer.toString();
-            getDatosJson(JsonString, locationQuery);
+          //  getDatosJson(JsonString, locationQuery);
 
         }catch (IOException ex){
             ex.printStackTrace();
 
-        } catch (JSONException e) {
+        }/* catch (JSONException e) {
             e.printStackTrace();
-        }
+        }*/
 
     }
     private void getDatosJson(String conciertoJsonStr,String locationSetting)
@@ -135,7 +135,7 @@ public class SincronizaAdaptador extends AbstractThreadedSyncAdapter{
             JSONArray artistasArray = artistasJson.getJSONArray(ARTISTAS);
             JSONObject ciudadesJson = new JSONObject(conciertoJsonStr);
             JSONArray ciudadesArray = ciudadesJson.optJSONArray(LUGAR);
-            JSONObject localizacionJson = new JSONObject(conciertoJsonStr)
+            JSONObject localizacionJson = new JSONObject(conciertoJsonStr);
             JSONArray localizacionArray = localizacionJson.getJSONArray(LOCALIZACION);
 
             //JSON Artistas
@@ -145,15 +145,16 @@ public class SincronizaAdaptador extends AbstractThreadedSyncAdapter{
             //JSON Lugares
             String nameCityLugar = ciudadesJson.getString(LUGAR_NOMBRE);
             String logoLugar = ciudadesJson.getString(LUGAR_LOGO);
+            double latitud = ciudadesJson.getDouble(LOCALIZACION_LATITUD);
+            double longitud =ciudadesJson.getDouble(LOCALIZACION_LONGITUD);
 
 
 
+            JSONObject cityCoord = ciudadesJson.getJSONObject(LOCALIZACION);
+            double cityLatitud = ciudadesJson.getDouble(LOCALIZACION_LATITUD);
+            double cityLongitud = ciudadesJson.getDouble(LOCALIZACION_LONGITUD);
 
-            JSONObject cityCoord = cityJson.getJSONObject(LOCALIZACION);
-            double cityLatitude = cityCoord.getDouble(LOCALIZACION_LATITUD);
-            double cityLongitude = cityCoord.getDouble(LOCALIZACION_LONGITUD);
-
-            long locationId = addLocation(locationSetting, cityName, cityLatitude, cityLongitude);
+       /*     long locationId = addLocation(locationSetting, cityName, cityLatitud, cityLongitud);
 
             // Insert the new weather information into the database
             Vector<ContentValues> cVVector = new Vector<ContentValues>(weatherArray.length());
@@ -248,9 +249,9 @@ public class SincronizaAdaptador extends AbstractThreadedSyncAdapter{
 
             Log.d(LOG_TAG, "Sunshine Service Complete. "
                     + cVVector + " Inserted. ");
-
+*/
         } catch (JSONException e) {
-            Log.e(LOG_TAG, e.getMessage(), e);
+            Log.e("", e.getMessage(), e);
             e.printStackTrace();
         }
     }

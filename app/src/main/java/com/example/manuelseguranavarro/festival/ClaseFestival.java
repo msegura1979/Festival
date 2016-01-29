@@ -29,6 +29,7 @@ public class ClaseFestival {
         this.ticketPriceMin = ticketPriceMin;
     }
 
+
     public String getArtistsName() {
         return artistsName;
     }
